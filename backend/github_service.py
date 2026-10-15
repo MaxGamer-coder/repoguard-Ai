@@ -32,7 +32,7 @@ async def fetch_public_pr_data(url: str) -> dict:
     owner, repo, pr_number = parse_and_validate_pr_url(url)
     headers = {"Accept": "application/vnd.github.v3+json"}
     
-    async with httpx.AsyncClient(timeout=15.0) as client:
+    async with httpx.AsyncClient(timeout=20.0) as client:
         # Fetch PR metadata
         pr_res = await client.get(f"https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}", headers=headers)
         
@@ -41,7 +41,7 @@ async def fetch_public_pr_data(url: str) -> dict:
         elif pr_res.status_code in [403, 429]:
             raise HTTPException(status_code=429, detail="GitHub API rate limit exceeded. Please try again shortly.")
         elif pr_res.status_code != 200:
-            raise HTTPException(status_code=pr_res.status_code, detail="Failed to fetch pull request from GitHub API.")
+            raise HTTPException(status_code=pr_res.status_code, detail=f"Failed to fetch pull request from GitHub API: {pr_res.text}")
             
         pr_data = pr_res.json()
         
@@ -66,12 +66,12 @@ async def fetch_public_pr_data(url: str) -> dict:
             })
             
             if patch:
-                truncated_patch = patch[:4000] if len(patch) > 4000 else patch
+                truncated_patch = patch[:5000] if len(patch) > 5000 else patch
                 diff_snippets.append(f"File: {filename} ({status})\n--- Diff ---\n{truncated_patch}")
                 
         combined_context = "\n\n".join(diff_snippets) if diff_snippets else "No code diff patches found for this PR."
-        if len(combined_context) > 25000:
-            combined_context = combined_context[:25000] + "\n\n[Context truncated due to size limit]"
+        if len(combined_context) > 30000:
+            combined_context = combined_context[:30000] + "\n\n[Context truncated due to size limit]"
 
         return {
             "owner": owner,
