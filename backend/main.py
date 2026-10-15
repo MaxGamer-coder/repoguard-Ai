@@ -1,4 +1,5 @@
 import os
+import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -17,7 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configure OpenAI v3 for Nebius Token Factory
 openai.api_key = os.environ.get("NEBIUS_API_KEY")
 openai.api_base = "https://api.tokenfactory.nebius.com/v1/"
 
@@ -26,59 +26,130 @@ NEBIUS_MODEL = "meta-llama/Meta-Llama-3.1-70B-Instruct"
 class AnalyzeRequest(BaseModel):
     repo: str
     pr_number: int
+    code_snippet: str
 
 @app.get("/api/reviews/{pr_number}")
 def get_review_data(pr_number: int):
+    # Initial empty state waiting for user to trigger a live review
     return {
         "prNumber": pr_number,
-        "prTitle": "feat(auth): add JWT token refresh rotation and rate limiting",
-        "branch": "feature/auth-hardening",
-        "securityScore": 84,
-        "summary": "Powered by Nebius Token Factory & NVIDIA open infrastructure — analyzed pull request #42 and detected 1 critical security vulnerability.",
-        "findingsCount": {
-            "critical": 1,
-            "high": 0,
-            "medium": 2,
-            "low": 1,
-            "total": 4
-        },
-        "findings": [
-            {
-                "id": 1,
-                "filePath": "backend/auth/jwt_handler.py",
-                "lineNumber": 34,
-                "category": "security",
-                "severity": "Critical",
-                "title": "Hardcoded fallback secret key detected",
-                "explanation": "Using a fallback string like 'secret123' compromises token signing security.",
-                "recommendedFix": "Raise a configuration error instead of falling back to a default static string."
-            }
-        ],
-        "history": [
-            { "id": "PR-42", "repo": "org/repoguard-ai", "title": "feat(auth): add JWT token refresh", "score": 84, "date": "10 mins ago", "status": "Changes Requested" }
-        ]
+        "prTitle": f"Pull Request #{pr_number} Audit",
+        "branch": "feature/security-scan",
+        "securityScore": 100,
+        "summary": "Ready for live inspection. Click 'Run AI Review' to execute real-time NVIDIA Llama analysis via Nebius Token Factory.",
+        "findingsCount": { "critical": 0, "high": 0, "medium": 0, "low": 0, "total": 0 },
+        "findings": [],
+        "history": []
     }
 
 @app.post("/api/analyze")
 def trigger_analysis(payload: AnalyzeRequest):
+    system_prompt = """You are RepoGuard AI, an elite autonomous security code reviewer.
+Analyze the provided code snippet for security vulnerabilities, bugs, and performance bottlenecks.
+You MUST reply ONLY with valid JSON matching this exact structure, with no markdown code blocks or extra text:
+{
+  "securityScore": 75,
+  "summary": "A concise 1-sentence summary of the security posture of this code.",
+  "findingsCount": {"critical": 1, "high": 0, "medium": 1, "low": 0, "total": 2},
+  "findings": [
+    {
+      "id": 1,
+      "filePath": "src/module.py",
+      "lineNumber": 1,
+      "category": "security",
+      "severity": "Critical",
+      "title": "Vulnerability Title",
+      "explanation": "Detailed explanation of why this is a risk.",
+      "recommendedFix": "Clear instructions or code fix."
+    }
+  ]
+}"""
+
     try:
         response = openai.ChatCompletion.create(
             model=NEBIUS_MODEL,
             messages=[
-                {"role": "system", "content": "You are RepoGuard AI, an expert automated security code reviewer."},
-                {"role": "user", "content": f"Perform a security audit for repository {payload.repo} on pull request #{payload.pr_number}."}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"Repository: {payload.repo}\nCode to audit:\n{payload.code_snippet}"}
             ],
-            temperature=0.3,
+            temperature=0.2,
         )
-        ai_response = response.choices[0].message.content
+        
+        raw_content = response.choices[0].message.content.strip()
+        
+        # Strip markdown code blocks if the model includes them
+        if raw_content.startswith("```"):
+            raw_content = raw_content.split("\n", 1)[1].rsplit("\n", 1)[0].replace("json", "").strip()
+            
+        parsed_data = json.loads(raw_content)
+        
         return {
             "success": True,
-            "message": "Analysis completed via Nebius Token Factory inference.",
-            "insights": ai_response
+            "prNumber": payload.pr_number,
+            "prTitle": f"Security Audit: {payload.repo} (PR #{payload.pr_number})",
+            "branch": "feature/security-scan",
+            "securityScore": parsed_data.get("securityScore", 50),
+            "summary": parsed_data.get("summary", "Analysis completed."),
+            "findingsCount": parsed_data.get("findingsCount", {"critical": 0, "high": 0, "medium": 0, "low": 0, "total": 0}),
+            "findings": parsed_data.get("findings", []),
+            "history": [
+                { 
+                    "id": f"PR-{payload.pr_number}", 
+                    "repo": payload.repo, 
+                    "title": f"Live Audit PR #{payload.pr_number}", 
+                    "score": parsed_data.get("securityScore", 50), 
+                    "date": "Just now", 
+                    "status": parsed_data.get("securityScore", 50) > 80 ? "Passed" : "Changes Requested" 
+                }
+            ]
         }
     except Exception as e:
+        print("Nebius API Error:", e)
         return {
-            "success": True,
-            "message": "Analysis executed successfully.",
-            "fallback_note": str(e)
+            "success": False,
+            "error": str(e)
         }
+    # Add this import near the top of backend/main.py
+from backend.github_service import fetch_public_pr_data
+
+# Add this request schema model
+class PullRequestUrlRequest(BaseModel):
+    pr_url: str
+
+# Add this endpoint route
+@app.post("/api/github/analyze-url")
+async def analyze_github_pr_url(payload: PullRequestUrlRequest):
+    # 1. Fetch real public PR data & code diffs securely from GitHub
+    pr_info = await fetch_public_pr_data(payload.pr_url)
+    
+    # 2. Reuse your existing Nebius Llama analysis pipeline function
+    analysis_result = run_nebius_security_analysis(
+        code_context=pr_info["codeContext"],
+        repo_name=f"{pr_info['owner']}/{pr_info['repo']}",
+        pr_title=pr_info["prTitle"]
+    )
+    
+    return {
+        "success": True,
+        "prNumber": pr_info["prNumber"],
+        "prTitle": pr_info["prTitle"],
+        "branch": pr_info["branch"],
+        "author": pr_info["author"],
+        "html_url": pr_info["html_url"],
+        "changedFilesCount": pr_info["changedFilesCount"],
+        "changedFiles": pr_info["changedFiles"],
+        "securityScore": analysis_result.get("securityScore", 75),
+        "summary": f"[Nebius Llama-3.1-70B Live Audit] {analysis_result.get('summary')}",
+        "findingsCount": analysis_result.get("findingsCount", {"critical": 0, "high": 0, "medium": 0, "low": 0, "total": 0}),
+        "findings": analysis_result.get("findings", []),
+        "history": [
+            {
+                "id": f"PR-{pr_info['prNumber']}",
+                "repo": f"{pr_info['owner']}/{pr_info['repo']}",
+                "title": pr_info["prTitle"],
+                "score": analysis_result.get("securityScore", 75),
+                "date": "Just now",
+                "status": "Passed" if analysis_result.get("securityScore", 75) >= 80 else "Changes Requested"
+            }
+        ]
+    }
