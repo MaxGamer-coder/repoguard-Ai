@@ -12,14 +12,15 @@ import {
 } from 'lucide-react';
 import DiffViewer from '@/components/DiffViewer';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// Hardcoded production API URL to bypass environment variable syntax issues
+const API_BASE_URL = 'https://repoguard-ai-h08c.onrender.com';
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'workspace' | 'findings' | 'history'>('overview');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [prUrlInput, setPrUrlInput] = useState('');
 
-  // Review & Workspace state (typed as any to bypass Vercel TypeScript strictness)
+  // Review & Workspace state (typed as any to bypass Vercel/Netlify TypeScript strictness)
   const [reviewData, setReviewData] = useState<any>({
     prNumber: 42,
     prTitle: "Paste a public GitHub PR URL above to begin audit",
