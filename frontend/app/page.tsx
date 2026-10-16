@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import DiffViewer from '@/components/DiffViewer';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'workspace' | 'findings' | 'history'>('overview');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -23,7 +25,7 @@ export default function DashboardPage() {
     prTitle: "Paste a public GitHub PR URL above to begin audit",
     branch: "main",
     securityScore: 100,
-    summary: "RepoGuard AI is ready. Paste any public GitHub pull request URL and click 'Run AI Review' to execute real-time NVIDIA Llama security analysis via Nebius Token Factory.",
+    summary: "RepoGuard AI is ready. Paste any public GitHub pull request URL and click 'Run AI Review' to execute real-time security analysis via Nebius Token Factory.",
     findingsCount: { critical: 0, high: 0, medium: 0, low: 0, total: 0 },
     findings: [],
     history: []
@@ -41,7 +43,7 @@ export default function DashboardPage() {
 
     setIsAnalyzing(true);
     try {
-      const res = await fetch('http://localhost:8000/api/github/analyze-url', {
+      const res = await fetch(`${API_BASE_URL}/api/github/analyze-url`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pr_url: prUrlInput.trim() })
@@ -58,7 +60,7 @@ export default function DashboardPage() {
       }
     } catch (err) {
       console.error("Failed to connect to backend:", err);
-      alert("Could not reach FastAPI backend. Ensure Uvicorn is running on port 8000.");
+      alert(`Could not reach FastAPI backend at ${API_BASE_URL}. Ensure your backend server is running.`);
     } finally {
       setIsAnalyzing(false);
     }
@@ -107,7 +109,7 @@ export default function DashboardPage() {
             {isAnalyzing ? (
               <>
                 <RefreshCw className="w-3.5 h-3.5 animate-spin"/>
-                <span>Running NVIDIA Llama...</span>
+                <span>Running AI Review...</span>
               </>
             ) : (
               <>
@@ -156,7 +158,7 @@ export default function DashboardPage() {
                   <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#F85149]/15 text-[#FF7B72] border border-[#F85149]/30">
                     <ShieldAlert className="w-3.5 h-3.5 mr-1"/> Audit Complete
                   </span>
-                  <span className="text-xs text-[#B5BCB0]">NVIDIA Llama-3.1-70B analyzed real PR changes via Nebius Token Factory</span>
+                  <span className="text-xs text-[#B5BCB0]">NVIDIA Llama analyzed real PR changes via Nebius Token Factory</span>
                 </div>
                 <p className="text-xs text-[#B5BCB0] leading-relaxed">{reviewData.summary}</p>
               </div>
