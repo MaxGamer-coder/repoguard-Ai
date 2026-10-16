@@ -12,9 +12,10 @@ load_dotenv()
 
 app = FastAPI(title="RepoGuard AI Backend", version="1.0.0")
 
+# Updated CORS Middleware to allow requests from local frontend and anywhere else
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=["*"],  # Allows all origins (localhost, Vercel, etc.)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
