@@ -19,11 +19,12 @@ export default function DashboardPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [prUrlInput, setPrUrlInput] = useState('');
 
-  // Review & Workspace state
+  // Review & Workspace state (author added to satisfy TypeScript build checks)
   const [reviewData, setReviewData] = useState({
     prNumber: 42,
     prTitle: "Paste a public GitHub PR URL above to begin audit",
     branch: "main",
+    author: "",
     securityScore: 100,
     summary: "RepoGuard AI is ready. Paste any public GitHub pull request URL and click 'Run AI Review' to execute real-time security analysis via Nebius Token Factory.",
     findingsCount: { critical: 0, high: 0, medium: 0, low: 0, total: 0 },
