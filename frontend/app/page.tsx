@@ -71,7 +71,7 @@ export default function DashboardPage() {
   const currentFile = changedFiles[activeFileIndex] || { filename: 'No file selected', patch: 'Paste a PR URL and run review.' };
 
   return (
-    <div className="min-h-screen bg-[#1D211E] text-[#E4E5DB] flex flex-col font-sans selection:bg-[#A3B18A]/30 selection:text-white" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
+    <div className="min-h-screen bg-[#F6F8FA] text-[#24292F] flex flex-col font-sans selection:bg-[#2F81F7]/20 selection:text-white" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
       
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
@@ -81,23 +81,23 @@ export default function DashboardPage() {
       `}</style>
 
       {/* Top Header Bar with GitHub PR URL Input */}
-      <header className="bg-[#292E29] border-b border-[#414940] px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3 sticky top-0 z-50 shadow-xs">
+      <header className="bg-white border-b border-[#D0D7DE] px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3 sticky top-0 z-50 shadow-xs">
         <div className="flex items-center space-x-4 w-full md:w-auto">
           <div className="flex items-center space-x-2">
-            <ShieldCheck className="w-5 h-5 text-[#A3B18A]"/>
-            <span className="font-semibold text-sm text-[#F0F1EA] tracking-tight">RepoGuard AI</span>
+            <ShieldCheck className="w-5 h-5 text-[#2F81F7]"/>
+            <span className="font-semibold text-sm text-[#24292F] tracking-tight">RepoGuard AI</span>
           </div>
-          <span className="text-[#A6ADA2]">/</span>
+          <span className="text-[#57606A]">/</span>
 
           {/* PR URL Input Field */}
-          <div className="flex items-center space-x-2 bg-[#1D211E] border border-[#414940] rounded px-2.5 py-1 text-xs font-mono flex-1 md:w-[420px]">
-            <LinkIcon className="w-3.5 h-3.5 text-[#A3B18A] shrink-0" />
+          <div className="flex items-center space-x-2 bg-[#F6F8FA] border border-[#D0D7DE] rounded px-2.5 py-1 text-xs font-mono flex-1 md:w-[420px]">
+            <LinkIcon className="w-3.5 h-3.5 text-[#2F81F7] shrink-0" />
             <input 
               type="text"
               value={prUrlInput}
               onChange={(e) => setPrUrlInput(e.target.value)}
               placeholder="https://github.com/owner/repo/pull/42"
-              className="bg-transparent text-[#F0F1EA] focus:outline-none w-full placeholder-[#636E61]"
+              className="bg-transparent text-[#24292F] focus:outline-none w-full placeholder-[#8C959F]"
             />
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function DashboardPage() {
           <button 
             onClick={handleRunAnalysis}
             disabled={isAnalyzing}
-            className="bg-[#A3B18A] hover:bg-[#92A079] text-[#1B1E1C] font-semibold px-4 py-1.5 rounded text-xs transition flex items-center gap-1.5 disabled:opacity-50 cursor-pointer shadow-xs"
+            className="bg-[#2F81F7] hover:bg-[#1F6FEB] text-white font-semibold px-4 py-1.5 rounded text-xs transition flex items-center gap-1.5 disabled:opacity-50 cursor-pointer shadow-xs"
           >
             {isAnalyzing ? (
               <>
@@ -124,27 +124,27 @@ export default function DashboardPage() {
       </header>
 
       {/* PR Subheader Navigation */}
-      <div className="bg-[#292E29] border-b border-[#414940] px-6 py-3">
+      <div className="bg-white border-b border-[#D0D7DE] px-6 py-3">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs font-mono text-[#B5BCB0]">
-              <span className="bg-[#A3B18A]/15 text-[#B8C4A2] border border-[#A3B18A]/30 px-2 py-0.5 rounded font-medium">
+            <div className="flex items-center gap-2 text-xs font-mono text-[#57606A]">
+              <span className="bg-[#DDF4FF] text-[#2F81F7] border border-[#2F81F7]/30 px-2 py-0.5 rounded font-medium">
                 PR #{reviewData.prNumber}
               </span>
-              <span>branch: <strong className="text-[#F0F1EA]">{reviewData.branch}</strong></span>
-              {reviewData.author && <span>author: <strong className="text-[#F0F1EA]">@{reviewData.author}</strong></span>}
+              <span>branch: <strong className="text-[#24292F]">{reviewData.branch}</strong></span>
+              {reviewData.author && <span>author: <strong className="text-[#24292F]">@{reviewData.author}</strong></span>}
             </div>
-            <h1 className="text-sm font-medium text-[#F0F1EA]">{reviewData.prTitle}</h1>
+            <h1 className="text-sm font-medium text-[#24292F]">{reviewData.prTitle}</h1>
           </div>
 
           <nav className="flex items-center space-x-1 text-xs font-medium">
-            <button onClick={() => setActiveTab('overview')} className={`px-3 py-2 rounded border-b-2 transition cursor-pointer ${activeTab === 'overview' ? 'border-[#A3B18A] text-[#F0F1EA] font-medium bg-[#1D211E]' : 'border-transparent text-[#B5BCB0] hover:text-[#F0F1EA]'}`}>Overview</button>
-            <button onClick={() => setActiveTab('workspace')} className={`px-3 py-2 rounded border-b-2 transition cursor-pointer ${activeTab === 'workspace' ? 'border-[#A3B18A] text-[#F0F1EA] font-medium bg-[#1D211E]' : 'border-transparent text-[#B5BCB0] hover:text-[#F0F1EA]'}`}>Files Changed ({changedFiles.length})</button>
-            <button onClick={() => setActiveTab('findings')} className={`px-3 py-2 rounded border-b-2 transition flex items-center gap-1.5 cursor-pointer ${activeTab === 'findings' ? 'border-[#A3B18A] text-[#F0F1EA] font-medium bg-[#1D211E]' : 'border-transparent text-[#B5BCB0] hover:text-[#F0F1EA]'}`}>
+            <button onClick={() => setActiveTab('overview')} className={`px-3 py-2 rounded border-b-2 transition cursor-pointer ${activeTab === 'overview' ? 'border-[#2F81F7] text-[#24292F] font-medium bg-[#F6F8FA]' : 'border-transparent text-[#57606A] hover:text-[#24292F]'}`}>Overview</button>
+            <button onClick={() => setActiveTab('workspace')} className={`px-3 py-2 rounded border-b-2 transition cursor-pointer ${activeTab === 'workspace' ? 'border-[#2F81F7] text-[#24292F] font-medium bg-[#F6F8FA]' : 'border-transparent text-[#57606A] hover:text-[#24292F]'}`}>Files Changed ({changedFiles.length})</button>
+            <button onClick={() => setActiveTab('findings')} className={`px-3 py-2 rounded border-b-2 transition flex items-center gap-1.5 cursor-pointer ${activeTab === 'findings' ? 'border-[#2F81F7] text-[#24292F] font-medium bg-[#F6F8FA]' : 'border-transparent text-[#57606A] hover:text-[#24292F]'}`}>
               <span>Security Findings</span>
-              <span className="bg-[#F85149]/20 text-[#FF7B72] border border-[#F85149]/30 text-[10px] px-1.5 py-0.2 rounded font-mono">{reviewData.findingsCount.critical}</span>
+              <span className="bg-[#DA3633]/15 text-[#DA3633] border border-[#DA3633]/30 text-[10px] px-1.5 py-0.2 rounded font-mono">{reviewData.findingsCount.critical}</span>
             </button>
-            <button onClick={() => setActiveTab('history')} className={`px-3 py-2 rounded border-b-2 transition cursor-pointer ${activeTab === 'history' ? 'border-[#A3B18A] text-[#F0F1EA] font-medium bg-[#1D211E]' : 'border-transparent text-[#B5BCB0] hover:text-[#F0F1EA]'}`}>Review Logs</button>
+            <button onClick={() => setActiveTab('history')} className={`px-3 py-2 rounded border-b-2 transition cursor-pointer ${activeTab === 'history' ? 'border-[#2F81F7] text-[#24292F] font-medium bg-[#F6F8FA]' : 'border-transparent text-[#57606A] hover:text-[#24292F]'}`}>Review Logs</button>
           </nav>
         </div>
       </div>
@@ -154,76 +154,76 @@ export default function DashboardPage() {
 
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            <div className="bg-[#292E29] border border-[#414940] rounded p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-xs">
+            <div className="bg-white border border-[#D0D7DE] rounded p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-xs">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#F85149]/15 text-[#FF7B72] border border-[#F85149]/30">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#DA3633]/15 text-[#DA3633] border border-[#DA3633]/30">
                     <ShieldAlert className="w-3.5 h-3.5 mr-1"/> Audit Complete
                   </span>
-                  <span className="text-xs text-[#B5BCB0]">NVIDIA Llama analyzed real PR changes via Nebius Token Factory</span>
+                  <span className="text-xs text-[#57606A]">NVIDIA Llama analyzed real PR changes via Nebius Token Factory</span>
                 </div>
-                <p className="text-xs text-[#B5BCB0] leading-relaxed">{reviewData.summary}</p>
+                <p className="text-xs text-[#57606A] leading-relaxed">{reviewData.summary}</p>
               </div>
-              <button onClick={() => setActiveTab('workspace')} className="bg-[#1D211E] hover:bg-[#414940] text-[#F0F1EA] border border-[#414940] px-3 py-1.5 rounded text-xs font-medium transition flex items-center gap-1 cursor-pointer">
+              <button onClick={() => setActiveTab('workspace')} className="bg-[#F6F8FA] hover:bg-[#D0D7DE]/50 text-[#24292F] border border-[#D0D7DE] px-3 py-1.5 rounded text-xs font-medium transition flex items-center gap-1 cursor-pointer">
                 <span>View Code Diff</span>
-                <ChevronRight className="w-4 h-4 text-[#B5BCB0]"/>
+                <ChevronRight className="w-4 h-4 text-[#57606A]"/>
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-[#292E29] border border-[#414940] rounded p-4 shadow-xs">
-                <span className="text-xs font-mono text-[#B5BCB0] uppercase">Security Score</span>
+              <div className="bg-white border border-[#D0D7DE] rounded p-4 shadow-xs">
+                <span className="text-xs font-mono text-[#57606A] uppercase">Security Score</span>
                 <div className="mt-2 flex items-baseline space-x-1.5">
-                  <span className="text-2xl font-semibold text-[#A3B18A] font-mono">{reviewData.securityScore}</span>
-                  <span className="text-[#B5BCB0] text-xs">/ 100</span>
+                  <span className="text-2xl font-semibold text-[#2F81F7] font-mono">{reviewData.securityScore}</span>
+                  <span className="text-[#57606A] text-xs">/ 100</span>
                 </div>
-                <div className="w-full bg-[#1D211E] h-1.5 rounded mt-3 overflow-hidden border border-[#414940]">
-                  <div className="bg-[#A3B18A] h-full rounded" style={{ width: `${reviewData.securityScore}%` }} />
+                <div className="w-full bg-[#F6F8FA] h-1.5 rounded mt-3 overflow-hidden border border-[#D0D7DE]">
+                  <div className="bg-[#2F81F7] h-full rounded" style={{ width: `${reviewData.securityScore}%` }} />
                 </div>
               </div>
 
-              <div className="bg-[#292E29] border border-[#414940] rounded p-4 shadow-xs">
-                <span className="text-xs font-mono text-[#B5BCB0] uppercase">Critical Vulnerability</span>
-                <div className="mt-2 text-2xl font-semibold text-[#FF7B72] font-mono">{reviewData.findingsCount.critical}</div>
-                <span className="text-xs text-[#FF7B72] mt-2 block font-medium">Requires remediation</span>
+              <div className="bg-white border border-[#D0D7DE] rounded p-4 shadow-xs">
+                <span className="text-xs font-mono text-[#57606A] uppercase">Critical Vulnerability</span>
+                <div className="mt-2 text-2xl font-semibold text-[#DA3633] font-mono">{reviewData.findingsCount.critical}</div>
+                <span className="text-xs text-[#DA3633] mt-2 block font-medium">Requires remediation</span>
               </div>
 
-              <div className="bg-[#292E29] border border-[#414940] rounded p-4 shadow-xs">
-                <span className="text-xs font-mono text-[#B5BCB0] uppercase">Warnings & Style</span>
-                <div className="mt-2 text-2xl font-semibold text-[#E6B450] font-mono">{reviewData.findingsCount.medium + reviewData.findingsCount.low}</div>
-                <span className="text-xs text-[#E6B450] mt-2 block font-medium">Medium/Low issues</span>
+              <div className="bg-white border border-[#D0D7DE] rounded p-4 shadow-xs">
+                <span className="text-xs font-mono text-[#57606A] uppercase">Warnings & Style</span>
+                <div className="mt-2 text-2xl font-semibold text-[#9E6A03] font-mono">{reviewData.findingsCount.medium + reviewData.findingsCount.low}</div>
+                <span className="text-xs text-[#9E6A03] mt-2 block font-medium">Medium/Low issues</span>
               </div>
 
-              <div className="bg-[#292E29] border border-[#414940] rounded p-4 shadow-xs">
-                <span className="text-xs font-mono text-[#B5BCB0] uppercase">Files Audited</span>
-                <div className="mt-2 text-2xl font-semibold text-[#F0F1EA] font-mono">{changedFiles.length}</div>
-                <span className="text-xs text-[#A3B18A] mt-2 block font-medium">GitHub PR diff files</span>
+              <div className="bg-white border border-[#D0D7DE] rounded p-4 shadow-xs">
+                <span className="text-xs font-mono text-[#57606A] uppercase">Files Audited</span>
+                <div className="mt-2 text-2xl font-semibold text-[#24292F] font-mono">{changedFiles.length}</div>
+                <span className="text-xs text-[#2F81F7] mt-2 block font-medium">GitHub PR diff files</span>
               </div>
             </div>
 
-            <div className="bg-[#292E29] border border-[#414940] rounded overflow-hidden shadow-xs">
-              <div className="bg-[#1D211E] px-4 py-3 border-b border-[#414940] flex items-center justify-between">
-                <h3 className="text-xs font-semibold uppercase text-[#B5BCB0] font-mono">Detected Security Findings</h3>
-                <button onClick={() => setActiveTab('findings')} className="text-xs text-[#A3B18A] hover:underline font-medium cursor-pointer">View all →</button>
+            <div className="bg-white border border-[#D0D7DE] rounded overflow-hidden shadow-xs">
+              <div className="bg-[#F6F8FA] px-4 py-3 border-b border-[#D0D7DE] flex items-center justify-between">
+                <h3 className="text-xs font-semibold uppercase text-[#57606A] font-mono">Detected Security Findings</h3>
+                <button onClick={() => setActiveTab('findings')} className="text-xs text-[#2F81F7] hover:underline font-medium cursor-pointer">View all →</button>
               </div>
-              <div className="divide-y divide-[#414940]">
+              <div className="divide-y divide-[#D0D7DE]">
                 {reviewData.findings && reviewData.findings.length > 0 ? (
                   reviewData.findings.map((f: any) => (
-                    <div key={f.id} className="p-4 flex items-center justify-between hover:bg-[#1D211E]/40 transition">
+                    <div key={f.id} className="p-4 flex items-center justify-between hover:bg-[#F6F8FA] transition">
                       <div className="flex items-start space-x-3">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${f.severity === 'Critical' ? 'bg-[#F85149]/15 text-[#FF7B72] border border-[#F85149]/30' : 'bg-[#D29922]/15 text-[#E6B450] border border-[#D29922]/30'}`}>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase ${f.severity === 'Critical' ? 'bg-[#DA3633]/15 text-[#DA3633] border border-[#DA3633]/30' : 'bg-[#9E6A03]/15 text-[#9E6A03] border border-[#9E6A03]/30'}`}>
                           {f.severity}
                         </span>
                         <div>
-                          <h4 className="text-xs font-semibold text-[#F0F1EA]">{f.title}</h4>
-                          <span className="text-[11px] font-mono text-[#B5BCB0]">{f.filePath}:{f.lineNumber}</span>
+                          <h4 className="text-xs font-semibold text-[#24292F]">{f.title}</h4>
+                          <span className="text-[11px] font-mono text-[#57606A]">{f.filePath}:{f.lineNumber}</span>
                         </div>
                       </div>
-                      <span className="text-[11px] font-mono text-[#B8C4A2] bg-[#A3B18A]/15 px-2 py-0.5 rounded border border-[#A3B18A]/30">{f.category}</span>
+                      <span className="text-[11px] font-mono text-[#2F81F7] bg-[#DDF4FF] px-2 py-0.5 rounded border border-[#2F81F7]/30">{f.category}</span>
                     </div>
                   ))
                 ) : (
-                  <div className="p-4 text-xs text-[#B5BCB0] font-mono">No security issues found in this pull request.</div>
+                  <div className="p-4 text-xs text-[#57606A] font-mono">No security issues found in this pull request.</div>
                 )}
               </div>
             </div>
@@ -234,15 +234,15 @@ export default function DashboardPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-sm font-semibold text-[#F0F1EA]">Pull Request Files Changed</h2>
-                <p className="text-xs text-[#B5BCB0]">Select a file to inspect its real Git diff patch.</p>
+                <h2 className="text-sm font-semibold text-[#24292F]">Pull Request Files Changed</h2>
+                <p className="text-xs text-[#57606A]">Select a file to inspect its real Git diff patch.</p>
               </div>
               <div className="flex gap-2">
                 {changedFiles.map((file, idx) => (
                   <button 
                     key={file.filename}
                     onClick={() => setActiveFileIndex(idx)}
-                    className={`px-3 py-1 rounded text-xs font-mono cursor-pointer transition ${activeFileIndex === idx ? 'bg-[#A3B18A] text-[#1B1E1C] font-semibold' : 'bg-[#292E29] text-[#B5BCB0] border border-[#414940]'}`}
+                    className={`px-3 py-1 rounded text-xs font-mono cursor-pointer transition ${activeFileIndex === idx ? 'bg-[#2F81F7] text-white font-semibold' : 'bg-white text-[#57606A] border border-[#D0D7DE]'}`}
                   >
                     {file.filename.split('/').pop()}
                   </button>
@@ -250,10 +250,10 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="border border-[#414940] rounded overflow-hidden bg-[#1D211E] shadow-xs">
-              <div className="bg-[#292E29] px-4 py-2 border-b border-[#414940] flex items-center justify-between text-xs font-mono text-[#B5BCB0]">
-                <span className="font-semibold text-[#F0F1EA]">{currentFile.filename}</span>
-                <span className="text-[#A3B18A] uppercase">{currentFile.status} (+{currentFile.additions}/-{currentFile.deletions})</span>
+            <div className="border border-[#D0D7DE] rounded overflow-hidden bg-white shadow-xs">
+              <div className="bg-[#F6F8FA] px-4 py-2 border-b border-[#D0D7DE] flex items-center justify-between text-xs font-mono text-[#57606A]">
+                <span className="font-semibold text-[#24292F]">{currentFile.filename}</span>
+                <span className="text-[#2F81F7] uppercase">{currentFile.status} (+{currentFile.additions}/-{currentFile.deletions})</span>
               </div>
               <DiffViewer filePath={currentFile.filename} language="diff" modifiedCode={currentFile.patch} originalCode=""/>
             </div>
@@ -262,32 +262,32 @@ export default function DashboardPage() {
 
         {activeTab === 'findings' && (
           <div className="space-y-4">
-            <h2 className="text-sm font-semibold text-[#F0F1EA] border-b border-[#414940] pb-2">Detailed Security Findings</h2>
+            <h2 className="text-sm font-semibold text-[#24292F] border-b border-[#D0D7DE] pb-2">Detailed Security Findings</h2>
             <div className="space-y-3">
               {reviewData.findings && reviewData.findings.length > 0 ? (
                 reviewData.findings.map((f: any) => (
-                  <div key={f.id} className="bg-[#292E29] border border-[#414940] rounded p-4 space-y-3 shadow-xs">
+                  <div key={f.id} className="bg-white border border-[#D0D7DE] rounded p-4 space-y-3 shadow-xs">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <span className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold ${f.severity === 'Critical' ? 'bg-[#F85149]/15 text-[#FF7B72] border border-[#F85149]/30' : 'bg-[#D29922]/15 text-[#E6B450] border border-[#D29922]/30'}`}>
+                        <span className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold ${f.severity === 'Critical' ? 'bg-[#DA3633]/15 text-[#DA3633] border border-[#DA3633]/30' : 'bg-[#9E6A03]/15 text-[#9E6A03] border border-[#9E6A03]/30'}`}>
                           {f.severity}
                         </span>
-                        <span className="font-mono text-xs text-[#B5BCB0]">{f.filePath}:{f.lineNumber}</span>
+                        <span className="font-mono text-xs text-[#57606A]">{f.filePath}:{f.lineNumber}</span>
                       </div>
-                      <span className="text-xs font-mono text-[#B8C4A2] bg-[#A3B18A]/15 px-2.5 py-0.5 rounded border border-[#A3B18A]/30">{f.category}</span>
+                      <span className="text-xs font-mono text-[#2F81F7] bg-[#DDF4FF] px-2.5 py-0.5 rounded border border-[#2F81F7]/30">{f.category}</span>
                     </div>
 
-                    <h3 className="text-sm font-semibold text-[#F0F1EA]">{f.title}</h3>
-                    <p className="text-xs text-[#B5BCB0] leading-relaxed">{f.explanation}</p>
+                    <h3 className="text-sm font-semibold text-[#24292F]">{f.title}</h3>
+                    <p className="text-xs text-[#57606A] leading-relaxed">{f.explanation}</p>
 
-                    <div className="bg-[#1D211E] border border-[#414940] rounded p-3 text-xs font-mono text-[#F0F1EA] space-y-1">
-                      <span className="text-[#B5BCB0] font-sans font-semibold block">Recommended Fix:</span>
-                      <p className="text-[#A3B18A]">{f.recommendedFix}</p>
+                    <div className="bg-[#F6F8FA] border border-[#D0D7DE] rounded p-3 text-xs font-mono text-[#24292F] space-y-1">
+                      <span className="text-[#57606A] font-sans font-semibold block">Recommended Fix:</span>
+                      <p className="text-[#2F81F7]">{f.recommendedFix}</p>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-xs text-[#B5BCB0] font-mono p-4">No findings recorded.</div>
+                <div className="text-xs text-[#57606A] font-mono p-4">No findings recorded.</div>
               )}
             </div>
           </div>
@@ -295,11 +295,11 @@ export default function DashboardPage() {
 
         {activeTab === 'history' && (
           <div className="space-y-4">
-            <h2 className="text-sm font-semibold text-[#F0F1EA] border-b border-[#414940] pb-2">Review Logs</h2>
-            <div className="bg-[#292E29] border border-[#414940] rounded overflow-hidden shadow-xs">
+            <h2 className="text-sm font-semibold text-[#24292F] border-b border-[#D0D7DE] pb-2">Review Logs</h2>
+            <div className="bg-white border border-[#D0D7DE] rounded overflow-hidden shadow-xs">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="bg-[#1D211E] border-b border-[#414940] text-[#B5BCB0] font-mono">
+                  <tr className="bg-[#F6F8FA] border-b border-[#D0D7DE] text-[#57606A] font-mono">
                     <th className="p-3">Pull Request</th>
                     <th className="p-3">Repository</th>
                     <th className="p-3">Security Score</th>
@@ -307,30 +307,30 @@ export default function DashboardPage() {
                     <th className="p-3">Time</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#414940]">
+                <tbody className="divide-y divide-[#D0D7DE]">
                   {reviewData.history && reviewData.history.length > 0 ? (
                     reviewData.history.map((item: any) => (
-                      <tr key={item.id} className="hover:bg-[#1D211E]/40 transition">
-                        <td className="p-3 font-medium text-[#F0F1EA] flex items-center gap-2">
-                          <GitPullRequest className="w-4 h-4 text-[#A3B18A]"/>
+                      <tr key={item.id} className="hover:bg-[#F6F8FA] transition">
+                        <td className="p-3 font-medium text-[#24292F] flex items-center gap-2">
+                          <GitPullRequest className="w-4 h-4 text-[#2F81F7]"/>
                           <div>
                             <div>{item.title}</div>
-                            <span className="text-[11px] text-[#B5BCB0] font-mono">{item.id}</span>
+                            <span className="text-[11px] text-[#57606A] font-mono">{item.id}</span>
                           </div>
                         </td>
-                        <td className="p-3 font-mono text-[#B5BCB0]">{item.repo}</td>
-                        <td className="p-3 font-mono font-semibold text-[#A3B18A]">{item.score}/100</td>
+                        <td className="p-3 font-mono text-[#57606A]">{item.repo}</td>
+                        <td className="p-3 font-mono font-semibold text-[#2F81F7]">{item.score}/100</td>
                         <td className="p-3">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium ${item.status === 'Passed' ? 'bg-[#238636]/20 text-[#3fb950] border border-[#238636]/30' : 'bg-[#F85149]/15 text-[#FF7B72] border border-[#F85149]/30'}`}>
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium ${item.status === 'Passed' ? 'bg-[#238636]/15 text-[#238636] border border-[#238636]/30' : 'bg-[#DA3633]/15 text-[#DA3633] border border-[#DA3633]/30'}`}>
                             {item.status}
                           </span>
                         </td>
-                        <td className="p-3 text-[#B5BCB0] font-mono">{item.date}</td>
+                        <td className="p-3 text-[#57606A] font-mono">{item.date}</td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={5} className="p-4 text-center text-[#B5BCB0] font-mono">No audit logs available.</td>
+                      <td colSpan={5} className="p-4 text-center text-[#57606A] font-mono">No audit logs available.</td>
                     </tr>
                   )}
                 </tbody>
